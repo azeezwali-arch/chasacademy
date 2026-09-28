@@ -54,6 +54,8 @@ med internet.
 **Windows:** Statisk IP sattes i Inställningar → Nätverk → Ethernet:
 192.168.1.51, mask 255.255.255.0, gateway 192.168.1.1.
 
+![Ip konfiguration-windwos](bilder/ip-windows.webp)
+
 **Linux:** Det var mycket krångligare på Linux, och jag fick mycket
 hjälp av AI. IP-adressen 192.168.1.50/24 sattes först med kommandot
 "ip addr add 192.168.1.50/24 dev enp0s3". Anslutningen hade ingen
@@ -62,16 +64,22 @@ disconnected from message bus", så jag testade flera kommandon.
 Till slut gav AI mig intruktionerna att skapa filen "/etc/cron.d/labip" med en rad som sätter
 adressen automatiskt vid varje uppstart.
 
-![IP inställningar](bilder/ip-linux.webp)
+![Ip konfiguration-linux](bilder/ip-linux.webp)
 
 ### 2.4 Test
 Ping från Windows till Linux (192.168.1.50) och från Linux till
 Windows (192.168.1.51) gav svar utan paketförlust.
 
+![ping linux](bilder/ping%20linux%20till%20widows.webp)
+![ping windows](bilder/ping%20widows%20to%20linux.webp)
+
 ### 2.5 Felsökning
 - Ping från Linux till Windows misslyckades först, eftersom
   Windows-brandväggen blockerar ping som standard. Jag lade till en
   brandväggsregel som tillåter ICMP. AI hjälpte till med "New-NetFirewallRule -DisplayName "Allow ICMPv4 Ping" -Protocol ICMPv4 -IcmpType 8 -Action Allow"
+  
+  ![Windows-brandväggen blockerar](bilder/powershell%20blockerar.webp)
+
 - Min första Windows-fil var för ARM-processorer och fungerade inte på
   min Intel-Mac. Jag laddade ner x64-versionen.
   
