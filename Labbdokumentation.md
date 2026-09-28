@@ -62,6 +62,8 @@ disconnected from message bus", så jag testade flera kommandon.
 Till slut gav AI mig intruktionerna att skapa filen "/etc/cron.d/labip" med en rad som sätter
 adressen automatiskt vid varje uppstart.
 
+![IP inställningar](bilder/ip-linux.webp)
+
 ### 2.4 Test
 Ping från Windows till Linux (192.168.1.50) och från Linux till
 Windows (192.168.1.51) gav svar utan paketförlust.
@@ -69,6 +71,7 @@ Windows (192.168.1.51) gav svar utan paketförlust.
 ### 2.5 Felsökning
 - Ping från Linux till Windows misslyckades först, eftersom
   Windows-brandväggen blockerar ping som standard. Jag lade till en
-  brandväggsregel som tillåter ICMP.
+  brandväggsregel som tillåter ICMP. AI hjälpte till med "New-NetFirewallRule -DisplayName "Allow ICMPv4 Ping" -Protocol ICMPv4 -IcmpType 8 -Action Allow"
 - Min första Windows-fil var för ARM-processorer och fungerade inte på
   min Intel-Mac. Jag laddade ner x64-versionen.
+  
