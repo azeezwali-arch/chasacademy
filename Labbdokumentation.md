@@ -77,9 +77,55 @@ Windows (192.168.1.51) gav svar utan paketförlust.
 - Ping från Linux till Windows misslyckades först, eftersom
   Windows-brandväggen blockerar ping som standard. Jag lade till en
   brandväggsregel som tillåter ICMP. AI hjälpte till med "New-NetFirewallRule -DisplayName "Allow ICMPv4 Ping" -Protocol ICMPv4 -IcmpType 8 -Action Allow"
-  
+
   ![Windows-brandväggen blockerar](bilder/powershell%20blockerar.webp)
 
 - Min första Windows-fil var för ARM-processorer och fungerade inte på
   min Intel-Mac. Jag laddade ner x64-versionen.
   
+
+## Del 3: Kommandoradsarbete och felsökning
+
+### 3.1 Linux (Bash)
+
+Jag skapade mappen och filen med:
+```bash
+sudo mkdir -p /var/systementor/konsultdata
+sudo touch /var/systementor/konsultdata/anteckningar.txt
+```
+
+Sedan skapade jag en ny grupp och tilldelade den till mappen:
+```bash
+sudo groupadd konsulter
+sudo chgrp -R konsulter /var/systementor/konsultdata
+sudo chmod 750 /var/systementor/konsultdata
+sudo chmod 640 /var/systementor/konsultdata/anteckningar.txt
+```
+
+**Behörigheterna enligt Least Privilege:**
+- Mappen (750): ägaren (root) får läsa, skriva och gå in i mappen.
+  Gruppen konsulter får läsa och gå in, men inte ändra. Övriga har
+  ingen åtkomst.
+- Filen (640): ägaren får läsa och skriva. Gruppen konsulter får bara
+  läsa. Övriga har ingen åtkomst.
+
+Jag kontrollerade behörigheterna med:
+```bash
+ls -la /var/systementor/konsultdata
+```
+Min egen användare är inte medlem i gruppen konsulter, så första
+försöket gav "Permission denied". Det visar att behörigheterna
+fungerar som tänkt, eftersom endast root och medlemmar i gruppen
+konsulter har åtkomst. Med `sudo` kunde jag se att mappen och filen
+ägs av root och gruppen konsulter, med rättigheterna drwxr-x---
+respektive -rw-r-----.
+![Kommandon som användes](bilder/Linux.png)
+
+Jag verifierade nätverket mot Windows-VM:en:
+```bash
+ping -c 4 192.168.1.51
+ip addr show
+```
+![pingar till windowa](bilder/ip-addr-show.png)
+Ping gav svar från alla fyra paket, och `ip addr show` bekräftade att
+enp0s3 hade adressen 192.168.1.50/24.
